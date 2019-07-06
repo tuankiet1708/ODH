@@ -97,8 +97,7 @@ class encn_Oxford {
                     let complement = T(segement.querySelector('.comple'));
                     complement = complement ? `<span class="complement">${complement}</span>` : '';
                     eng_tran = `<span class='eng_tran'>${eng_tran.replace(RegExp(expression, 'gi'),`<b>${expression}</b>`)}</span>`;
-                    chn_tran = `<span class='chn_tran'>${chn_tran}</span>`;
-                    definition += `${dis}${pos}${grammar}${complement}${informal}<span class='tran'>${eng_tran}${chn_tran}</span>`;
+                    definition += `${dis}${pos}${grammar}${complement}${informal}<span class='tran'>${eng_tran}</span>`;
                 }
                 if (segement.classList && segement.classList.contains('li_exs')) {
                     let examps = segement.querySelectorAll('.li_ex') || [];
@@ -107,8 +106,7 @@ class encn_Oxford {
                         for (const [index, examp] of examps.entries()) {
                             if (index > this.maxexample - 1) break; // to control only 2 example sentence.
                             let eng_examp = T(examp.querySelector('.val_ex'));
-                            let chn_examp = T(examp.querySelector('.bil_ex'));
-                            definition += `<li class='sent'><span class='eng_sent'>${eng_examp.replace(RegExp(expression, 'gi'),`<b>${expression}</b>`)}</span><span class='chn_sent'>${chn_examp}</span></li>`;
+                            definition += `<li class='sent'><span class='eng_sent'>${eng_examp.replace(RegExp(expression, 'gi'),`<b>${expression}</b>`)}</span></li>`;
                         }
                         definition += '</ul>';
                     }
@@ -131,13 +129,13 @@ class encn_Oxford {
                 let definition = '';
                 eng_tran = eng_tran ? `<span class='eng_tran'>${eng_tran}</span>` : '';
                 chn_tran = chn_tran ? `<span class='chn_tran'>${chn_tran}</span>` : '';
-                definition += `${idmphrase}<span class='tran'>${eng_tran}${chn_tran}</span>`;
+                definition += `${idmphrase}<span class='tran'>${eng_tran}</span>`;
                 // make exmaple segement
                 let eng_examp = T(idmblock.querySelector('.val_ex'));
                 let chn_examp = T(idmblock.querySelector('.bil_ex'));
                 if (eng_examp && chn_examp && this.maxexample > 0) {
                     definition += '<ul class="sents">';
-                    definition += `<li class='sent'><span class='eng_sent'>${eng_examp}</span><span class='chn_sent'>${chn_examp}</span></li>`;
+                    definition += `<li class='sent'><span class='eng_sent'>${eng_examp}</span></li>`;
                     definition += '</ul>';
                 }
                 // add into difinition array
@@ -226,7 +224,8 @@ class encn_Oxford {
                 div.idmphrase {font-weight: bold;margin: 0;padding: 0;}
                 span.star {color: #FFBB00;}
                 span.eng_dis  {margin-right: 5px;}
-                span.chn_dis  {margin: 0;padding: 0;}
+                span.
+_dis  {margin: 0;padding: 0;}
                 span.pos  {text-transform:lowercase; font-size:0.9em; margin-right:5px; padding:2px 4px; color:white; background-color:#0d47a1; border-radius:3px;}
                 span.tran {margin:0; padding:0;}
                 span.eng_tran {margin-right:3px; padding:0;}
