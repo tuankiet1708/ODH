@@ -12,7 +12,7 @@ class encn_Oxford {
         let locale = await api.locale();
         if (locale.indexOf('CN') != -1) return '牛津英汉双解';
         if (locale.indexOf('TW') != -1) return '牛津英汉双解';
-        return 'Oxford EN->CN Dictionary';
+        return 'Oxford EN->EN Dictionary';
     }
 
 
@@ -56,11 +56,11 @@ class encn_Oxford {
                 //if (def.tag == 'xrs')
                 //    definition += `<span class='tran'><span class='eng_tran'>${def.data[0].data[0].text}</span></span>`;
                 if (def.tag == 'd' || def.tag == 'ud')
-                    definition += pos + `<span class='tran'><span class='eng_tran'>${def.enText}</span><span class='chn_tran'>${def.chText}</span></span>`;
+                    definition += pos + `<span class='tran'><span class='eng_tran'>${def.enText}</span></span>`;
                 if (def.tag == 'x' && sentnum < maxexample) {
                     sentnum += 1;
                     let enText = def.enText.replace(RegExp(exp, 'gi'), `<b>${exp}</b>`);
-                    sentence += `<li class='sent'><span class='eng_sent'>${enText}</span><span class='chn_sent'>${def.chText}</span></li>`;
+                    sentence += `<li class='sent'><span class='eng_sent'>${enText}</span></li>`;
                 }
             }
             definition += sentence ? `<ul class="sents">${sentence}</ul>` : '';
@@ -171,7 +171,7 @@ class encn_Oxford {
                                 pos = `<span class='pos'>${group.p_text}</span>`;
                             }
                             if (group.tag == 'd') {
-                                definition += pos + `<span class='tran'><span class='eng_tran'>${group.enText}</span><span class='chn_tran'>${group.chText}</span></span>`;
+                                definition += pos + `<span class='tran'><span class='eng_tran'>${group.enText}</span></span>`;
                                 definitions.push(definition);
                             }
 
@@ -188,7 +188,7 @@ class encn_Oxford {
 
                             if (group.tag == 'sd-g' || group.tag == 'ids-g' || group.tag == 'pvs-g') {
                                 for (const item of group.data) {
-                                    if (item.tag == 'sd') definition = `<div class="dis"><span class="eng_dis">${item.enText}</span><span class="chn_dis">${item.chText}</span></div>` + definition;
+                                    if (item.tag == 'sd') definition = `<div class="dis"><span class="eng_dis">${item.enText}</span></div>` + definition;
                                     let defs = [];
                                     if (item.tag == 'n-g' || item.tag == 'id-g' || item.tag == 'pv-g') defs = item.data;
                                     if (item.tag == 'vrs' || item.tag == 'xrs') defs = item.data[0].data;
