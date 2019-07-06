@@ -10,7 +10,7 @@ class encn_Oxford {
         let locale = await api.locale();
         if (locale.indexOf('CN') != -1) return '牛津英汉双解(bing)';
         if (locale.indexOf('TW') != -1) return '牛津英漢雙解(bing)';
-        return 'Oxford EN->CN Dictionary(bing)';
+        return 'Oxford EN->EN Dictionary(bing)';
     }
 
 
