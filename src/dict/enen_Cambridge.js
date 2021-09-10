@@ -10,7 +10,7 @@ class encn_Cambridge {
         let locale = await api.locale();
         if (locale.indexOf('CN') != -1) return '剑桥英汉双解';
         if (locale.indexOf('TW') != -1) return '劍橋英漢雙解';
-        return 'Cambridge EN->EN Dictionary';
+        return 'Cambridge EN->CN Dictionary';
     }
 
     setOptions(options) {
@@ -36,7 +36,7 @@ class encn_Cambridge {
                 return node.innerText.trim();
         }
 
-        let base = 'https://dictionary.cambridge.org/dictionary/english/';
+        let base = 'https://dictionary.cambridge.org/search/english-chinese-simplified/direct/?q=';
         let url = base + encodeURIComponent(word);
         let doc = '';
         try {
