@@ -1,5 +1,5 @@
 /* global api */
-class fren_Cambridge {
+class enfr_Cambridge {
     constructor(options) {
         this.options = options;
         this.maxexample = 2;
@@ -8,9 +8,9 @@ class fren_Cambridge {
 
     async displayName() {
         let locale = await api.locale();
-        if (locale.indexOf('CN') != -1) return '剑桥法英词典';
-        if (locale.indexOf('TW') != -1) return '剑桥法英词典';
-        return 'Cambridge EN->EN Dictionary';
+        if (locale.indexOf('CN') != -1) return '剑桥英法词典';
+        if (locale.indexOf('TW') != -1) return '剑桥英法词典';
+        return 'Cambridge EN->EN Dictionary (from EN->FR)';
     }
 
     setOptions(options) {
@@ -23,16 +23,32 @@ class fren_Cambridge {
         return await this.findCambridge(word);
     }
 
-    async findCambridge(word) {
-        let notes = [];
-        if (!word) return notes; // return empty notes
+    removeTags(elem, name) {
+        let tags = elem.querySelectorAll(name);
+        tags.forEach(x => {
+            x.outerHTML = '';
+        });
+    }
 
-        function T(node) {
-            if (!node)
-                return '';
-            else
-                return node.innerText.trim();
-        }
+    removelinks(elem) {
+        let tags = elem.querySelectorAll('a');
+        tags.forEach(x => {
+            x.outerHTML = x.innerText;
+        });
+
+        tags = elem.querySelectorAll('h2');
+        tags.forEach(x => {
+            x.outerHTML = `<div class='head2'>${x.innerHTML}</div>`;
+        });
+
+        tags = elem.querySelectorAll('h3');
+        tags.forEach(x => {
+            x.outerHTML = `<div class='head3'>${x.innerHTML}</div>`;
+        });
+    }
+
+    async findCambridge(word) {
+        if (!word) return null;
 
         let base = 'https://dictionary.cambridge.org/search/english/direct/?q=';
         let url = base + encodeURIComponent(word);
@@ -42,73 +58,46 @@ class fren_Cambridge {
             let parser = new DOMParser();
             doc = parser.parseFromString(data, 'text/html');
         } catch (err) {
-            return [];
+            return null;
         }
 
-        let entries = doc.querySelectorAll('.cdo-dblclick-area .entry-body__el') || [];
-        for (const entry of entries) {
-            let definitions = [];
-            let audios = [];
+        let contents = doc.querySelectorAll('.cdo-dblclick-area .entry-body__el') || [];
+        if (contents.length == 0) return null;
 
-            let expression = T(entry.querySelector('.di-title'));
-            let reading = T(entry.querySelector('.pron-info .ipa'));
-            let pos = T(entry.querySelector('.posgram'));
-            pos = pos ? `<span class='pos'>${pos}</span>` : '';
-
-            let defblocks = entry.querySelectorAll('.def-block') || [];
-            // make definition segement
-            for (const defblock of defblocks) {
-                let indicator = T(defblock.querySelector('.def-head .indicator'));
-                let eng_tran = T(defblock.querySelector('.def-head .def'));
-                let chn_tran = T(defblock.querySelector('.def-body .trans'));
-                if (!eng_tran || !chn_tran) continue;
-                let definition = '';
-                eng_tran = `<span class='eng_tran'>${indicator} ${eng_tran}</span>`;
-                chn_tran = `<span class='chn_tran'>${chn_tran}</span>`;
-                let tran = `<span class='tran'>${eng_tran}${chn_tran}</span>`;
-                definition += `${pos}${tran}`;
-
-                // make exmaple segement
-                let examps = defblock.querySelectorAll('.def-body .examp') || [];
-                if (examps.length > 0 && this.maxexample > 0) {
-                    definition += '<ul class="sents">';
-                    for (const [index, examp] of examps.entries()) {
-                        if (index > this.maxexample - 1) break; // to control only 2 example sentence.
-                        let eng_examp = T(examp.querySelector('.eg'));
-                        let chn_examp = T(examp.querySelector('.trans'));
-                        definition += `<li class='sent'><span class='eng_sent'>${eng_examp}</span><span class='chn_sent'>${chn_examp}</span></li>`;
-                    }
-                    definition += '</ul>';
-                }
-                definitions.push(definition);
-            }
-            if (definitions.length > 0) {
-                let css = this.renderCSS();
-                notes.push({
-                    css,
-                    expression,
-                    reading,
-                    definitions,
-                    audios
-                });
-            }
+        let definition = '';
+        for (const content of contents) {
+            this.removeTags(content, '.extraexamps');
+            this.removelinks(content);
+            definition += content.innerHTML;
         }
-        return notes;
+        let css = this.renderCSS();
+        return definition ? css + definition : null;
     }
 
     renderCSS() {
         let css = `
             <style>
-                div.phrasehead{margin: 2px 0;font-weight: bold;}
-                span.pos  {text-transform:lowercase; font-size:0.9em; margin-right:5px; padding:2px 4px; color:white; background-color:#0d47a1; border-radius:3px;}
-                span.tran {margin:0; padding:0;}
-                span.eng_tran {margin-right:3px; padding:0;}
-                span.chn_tran {font-weight:bold; color:#0d47a1;}
-                ul.sents {font-size:0.9em; list-style:square inside; margin:3px 0;padding:5px;background:rgba(13,71,161,0.1); border-radius:5px;}
-                li.sent  {margin:0; padding:0;}
-                span.eng_sent {margin-right:5px;}
-                span.chn_sent {color:#0d47a1;}
+            .entry-body__el{margin-bottom:10px;}
+            .head2{font-size: 1.2em;font-weight:bold;}
+            .pos-header{border-bottom: 1px solid;}
+            .head3 {display:none;}
+            .posgram {font-size: 0.8em;background-color: #959595;color: white;padding: 2px 5px;border-radius: 3px;}
+            .epp-xref::after {content: ")";}
+            .epp-xref::before {content: "(";}
+            .def-block, .phrase-block {
+                /*border: 1px solid;*/
+                /*border-color: #e5e6e9 #dfe0e4 #d0d1d5;*/
+                border-radius: 3px;
+                padding: 5px;
+                margin: 5px 0;
+                background-color: #f6f6f6;
+            }
+            .phrase-block .def-block{border: initial;padding: initial;}
+            p.def-head {margin: auto;}
+            .phrase-head {vertical-align: middle;color: #1683ea;font-weight: bold;}
+            .trans {color: #5079bb;}
             </style>`;
+
         return css;
     }
 }
