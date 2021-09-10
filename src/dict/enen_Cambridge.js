@@ -20,7 +20,7 @@ class encn_Cambridge {
 
     async findTerm(word) {
         this.word = word;
-        let promises = [this.findCambridge(word), this.findYoudao(word)];
+        let promises = [this.findCambridge(word)];
         let results = await Promise.all(promises);
         return [].concat(...results).filter(x => x);
     }
