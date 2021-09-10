@@ -1,5 +1,5 @@
 /* global api */
-class enen_Cambridge {
+class encn_Cambridge {
     constructor(options) {
         this.options = options;
         this.maxexample = 2;
