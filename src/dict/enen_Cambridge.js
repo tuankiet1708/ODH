@@ -20,8 +20,7 @@ class encn_Cambridge {
 
     async findTerm(word) {
         this.word = word;
-        //let promises = [this.findCambridge(word), this.findYoudao(word)];
-        let promises = [this.findCambridge(word)];
+        let promises = [this.findCambridge(word), this.findYoudao(word)];
         let results = await Promise.all(promises);
         return [].concat(...results).filter(x => x);
     }
@@ -37,7 +36,7 @@ class encn_Cambridge {
                 return node.innerText.trim();
         }
 
-        let base = 'https://dictionary.cambridge.org/search/english/direct/?q=';
+        let base = 'https://dictionary.cambridge.org/dictionary/english/';
         let url = base + encodeURIComponent(word);
         let doc = '';
         try {
@@ -89,13 +88,12 @@ class encn_Cambridge {
                     // make definition segement
                     for (const defblock of defblocks) {
                         let eng_tran = T(defblock.querySelector('.def-head .def'));
-                        //let chn_tran = T(defblock.querySelector('.def-body .trans'));
+                        let chn_tran = T(defblock.querySelector('.def-body .trans'));
                         if (!eng_tran) continue;
                         let definition = '';
                         eng_tran = `<span class='eng_tran'>${eng_tran.replace(RegExp(expression, 'gi'),`<b>${expression}</b>`)}</span>`;
-                        //chn_tran = `<span class='chn_tran'>${chn_tran}</span>`;
-                        //let tran = `<span class='tran'>${eng_tran}${chn_tran}</span>`;
-                        let tran = `<span class='tran'>${eng_tran}</span>`;
+                        chn_tran = `<span class='chn_tran'>${chn_tran}</span>`;
+                        let tran = `<span class='tran'>${eng_tran}${chn_tran}</span>`;
                         definition += phrasehead ? `${phrasehead}${tran}` : `${pos}${tran}`;
 
                         // make exmaple segement
