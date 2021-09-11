@@ -62,12 +62,15 @@ class encn_Cambridge {
             }
             let pos = T(entry.querySelector('.posgram'));
             pos = pos ? `<span class='pos'>${pos}</span>` : '';
-            audios[0] = entry.querySelector('.pos-header>.uk amp-audio source[type="audio/mpeg"]');
-            audios[0] = audios[0] ? 'https://dictionary.cambridge.org' + audios[0].getAttribute('src') : '';
+            //audios[0] = entry.querySelector('.pos-header>.uk amp-audio source[type="audio/mpeg"]');
+            //audios[0] = audios[0] ? 'https://dictionary.cambridge.org' + audios[0].getAttribute('src') : '';
             //audios[0] = audios[0].replace('https', 'http');
-            audios[1] = entry.querySelector('.pos-header>.us amp-audio source[type="audio/mpeg"]');
-            audios[1] = audios[1] ? 'https://dictionary.cambridge.org' + audios[1].getAttribute('src') : '';
+            audios[0] = `https://fanyi.baidu.com/gettts?lan=uk&text=${encodeURIComponent(word)}&spd=3&source=web`;
+            
+            //audios[1] = entry.querySelector('.pos-header>.us amp-audio source[type="audio/mpeg"]');
+            //audios[1] = audios[1] ? 'https://dictionary.cambridge.org' + audios[1].getAttribute('src') : '';
             //audios[1] = audios[1].replace('https', 'http');
+            audios[1] = `https://fanyi.baidu.com/gettts?lan=en&text=${encodeURIComponent(word)}&spd=3&source=web`;
 
             let sensbodys = entry.querySelectorAll('.sense-body') || [];
             for (const sensbody of sensbodys) {
